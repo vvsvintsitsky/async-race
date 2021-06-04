@@ -1,0 +1,27 @@
+{
+  "name": "async-race",
+  "version": "0.0.1",
+  "description": "Async Race",
+  "scripts": {
+    "build": "npm run css-types && webpack --config ./webpackProd.config.js",
+    "runDev": "webpack serve --config ./webpack.config.js",
+    "css-types": "tcm -p src/**/*.module.css",
+    "css-types-watch": "tcm -p src/**/*.module.css --watch",
+    "start": "concurrently --kill-others 'npm:runDev' 'npm:css-types-watch'"
+  },
+  "author": "vvsvintsitsky",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "6.2.0",
+    "css-loader": "5.2.6",
+    "html-webpack-plugin": "5.3.1",
+    "mini-css-extract-plugin": "1.6.0",
+    "style-loader": "2.0.0",
+    "ts-loader": "9.2.2",
+    "typed-css-modules": "0.7.0",
+    "typescript": "4.3.2",
+    "webpack": "5.38.1",
+    "webpack-cli": "4.7.0",
+    "webpack-dev-server": "3.11.2"
+  }
+}
