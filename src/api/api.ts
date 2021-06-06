@@ -37,10 +37,6 @@ export type RequestArguments<Payload = void, PathParams = void, QueryParams = vo
     | WithPathParams<PathParams>
     | WithQueryParams<QueryParams>
 
-export interface HeaderGetter {
-    (headerName: string): void;
-}
-
 export interface WithData<T> {
     body: T;
 }
