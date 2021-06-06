@@ -1,4 +1,6 @@
-const buildQueryParams = (params: unknown) => {
+import { Params } from "../api/api";
+
+const buildQueryParams = (params: Params) => {
   const paramString = Object.keys(params)
     .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
     .join("&");
@@ -6,10 +8,10 @@ const buildQueryParams = (params: unknown) => {
   return `?${paramString}`;
 };
 
-const setPathParams = (url: string, params: unknown) => Object
+const setPathParams = (url: string, params: Params) => Object
   .keys(params)
   .reduce((result, key) => result.replace(key, String(params[key])), url)
 
-export function buildQuery({ url, queryParams, pathParams }: { url: string, queryParams?: unknown | void, pathParams?: unknown | void }) {
+export function buildQuery({ url, queryParams, pathParams }: { url: string, queryParams?: Params, pathParams?: Params }) {
   return `${pathParams ? setPathParams(url, pathParams) : url}${queryParams ? buildQueryParams(queryParams) : ''}`;
 }

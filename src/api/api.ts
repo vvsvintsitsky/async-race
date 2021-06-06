@@ -12,34 +12,24 @@ export interface RequestResource {
     url: string;
 }
 
-export type Params = Record<string, string | number>;
+export type Params = Record<string, string | number | boolean>;
 
-export const PAYLOAD_KEY = "body";
-
-export interface WithPayload<T> {
-    [PAYLOAD_KEY]: T;
+export interface WithPayload<T = void> {
+    body: T;
 }
 
-export const QUERY_PARAMS_KEY = "queryParams";
-
-export interface WithQueryParams<T> {
-    [QUERY_PARAMS_KEY]: T;
+export interface WithQueryParams<T = void> {
+    queryParams: T;
 }
 
-export const PATH_PARAMS_KEY = "pathParams";
-
-export interface WithPathParams<T> {
-    [PATH_PARAMS_KEY]: T;
+export interface WithPathParams<T = void> {
+    pathParams: T;
 }
 
 export type RequestArguments<Payload = void, PathParams = void, QueryParams = void> =
     | WithPayload<Payload>
     | WithPathParams<PathParams>
     | WithQueryParams<QueryParams>
-
-export interface WithData<T> {
-    body: T;
-}
 
 export interface Query<ResResult, ReqArgs = RequestArguments> extends RequestResource { }
 

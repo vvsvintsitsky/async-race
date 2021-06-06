@@ -1,24 +1,21 @@
-import { Query, WithData, RequestArguments, PAYLOAD_KEY,PATH_PARAMS_KEY, QUERY_PARAMS_KEY } from "../api/api";
+import { Query, WithQueryParams, WithPathParams, Params, WithPayload } from "../api/api";
+import { extractProperty } from "../utils/extractProperty";
 
 import { buildQuery } from "./buildQuery";
 import { HttpRequestError } from "./HttpRequestError";
 
-function extractProperty<T>(baseObject: T, key: string): unknown {
-  return key in baseObject ? baseObject[key] : undefined;
-}
-
-export async function sendRequest<ReqPayload, ReqPathParams, ReqQueryParams, ResData>({
+export async function sendRequest<T, Y>({
   resource: { method, url },
   variables,
   doRequest = fetch,
 }: {
-  resource: Query<ResData, RequestArguments<ReqPayload, ReqPathParams, ReqQueryParams>>;
-  variables: RequestArguments<ReqPayload, ReqPathParams, ReqQueryParams>;
+  resource: Query<T, Y>;
+  variables?: Y;
   doRequest?: typeof fetch;
-}): Promise<WithData<ResData> & { status: number, headers: Headers }> {
-  const body = extractProperty(variables, PAYLOAD_KEY);
-  const pathParams = extractProperty(variables, PATH_PARAMS_KEY);
-  const queryParams = extractProperty(variables, QUERY_PARAMS_KEY);
+}): Promise<{ status: number, headers: Headers, body: T }> {
+  const body = extractProperty<WithPayload>(variables, "body");
+  const pathParams = extractProperty<WithPathParams<Params>>(variables, "pathParams");
+  const queryParams = extractProperty<WithQueryParams<Params>>(variables, "queryParams");
 
   const response = await doRequest(buildQuery({ url, queryParams, pathParams }), {
     method,
