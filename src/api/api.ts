@@ -57,7 +57,7 @@ export type API_SCHEMA_TYPE = {
     UPDATE_CAR: CarQueries["UPDATE"];
     SET_CAR_ENGINE_STATUS: Query<CarStatus, RequestArguments<void, void, IdPathParam & { status: CarEngineStatus.Started | CarEngineStatus.Stopped }>>;
     START_CAR_MOVING: Query<{ success: true }, RequestArguments<void, void, IdPathParam & { status: CarEngineStatus.Drive }>>;
-    GET_ALL_WINNERS: Query<Winner[], RequestArguments<void, void, { _page: number; _limit: number; _sort?: WinnersSortColumns; _order: SortOrder }>>;
+    GET_ALL_WINNERS: Query<Winner[], RequestArguments<void, void, { _page: number; _limit: number; _sort?: WinnersSortColumns; _order?: SortOrder }>>;
     GET_WINNER: WinnerQueries["GET_BY_ID"];
     CREATE_WINNER: WinnerQueries["CREATE"];
     DELETE_WINNER: WinnerQueries["DELETE"];
