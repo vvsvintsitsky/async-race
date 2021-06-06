@@ -1,28 +1,32 @@
-import { Query, RequestTypes, ResponseTypes } from "../api/api";
+import { Query, WithData, RequestArguments, PAYLOAD_KEY,PATH_PARAMS_KEY, QUERY_PARAMS_KEY } from "../api/api";
 
 import { buildQuery } from "./buildQuery";
 import { HttpRequestError } from "./HttpRequestError";
 
-export async function sendRequest<RequestBody, PathParams, QueryParams, ResponseBody, ResponseHeaders>({
+function extractProperty<T>(baseObject: T, key: string): unknown {
+  return key in baseObject ? baseObject[key] : undefined;
+}
+
+export async function sendRequest<ReqPayload, ReqPathParams, ReqQueryParams, ResData>({
   resource: { method, url },
-  queryParams,
-  pathParams,
-  body,
+  variables,
   doRequest = fetch,
 }: {
-  resource: Query<RequestTypes<RequestBody, PathParams, QueryParams>, RequestTypes<ResponseBody, ResponseHeaders>>;
-  queryParams?: QueryParams;
-  pathParams?: PathParams;
-  body?: RequestBody;
+  resource: Query<ResData, RequestArguments<ReqPayload, ReqPathParams, ReqQueryParams>>;
+  variables: RequestArguments<ReqPayload, ReqPathParams, ReqQueryParams>;
   doRequest?: typeof fetch;
-}): Promise<ResponseTypes<ResponseBody, ResponseHeaders>> {
+}): Promise<WithData<ResData> & { status: number, headers: Headers }> {
+  const body = extractProperty(variables, PAYLOAD_KEY);
+  const pathParams = extractProperty(variables, PATH_PARAMS_KEY);
+  const queryParams = extractProperty(variables, QUERY_PARAMS_KEY);
+
   const response = await doRequest(buildQuery({ url, queryParams, pathParams }), {
     method,
     ...(body ? {
       headers: {
         "Content-Type": "application/json",
       },
-      body: body ? JSON.stringify(body) : undefined
+      body: JSON.stringify(body),
     } : {})
   });
 
@@ -33,8 +37,8 @@ export async function sendRequest<RequestBody, PathParams, QueryParams, Response
   try {
     return {
       body: await response.json(),
-      headers: response.headers,
       status: response.status,
+      headers: response.headers,
     };
   } catch (e) {
     throw new HttpRequestError("Failed to parse response body", response.status);

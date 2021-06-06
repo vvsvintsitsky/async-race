@@ -15,6 +15,11 @@ export enum CarEngineStatus {
   Drive = "drive",
 }
 
+export interface CarStatus {
+  velocity: number;
+  distance: number;
+}
+
 export enum SortOrder {
   Asc = "ASC",
   Desc = "DESC",
