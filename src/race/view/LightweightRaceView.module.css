@@ -1,0 +1,33 @@
+:root {
+  --car-width: 50px;
+  --car-height: 20px;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  border-bottom: 3px dashed green;
+  height: var(--car-height);
+}
+
+.track {
+  position: relative;
+  flex-grow: 1;
+}
+
+.finishLine {
+    border-left: 2px dashed red;
+    width: var(--car-width);
+}
+
+.car {
+  position: absolute;
+  width: var(--car-width);
+  height: var(--car-height);
+  background-color: black;
+  left: 0;
+}
+
+.carMovement {
+  transition: left linear var(--timeToFinish);
+}

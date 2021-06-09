@@ -7,4 +7,5 @@ export interface RaceView {
   startRace(velocity: number, distance: number): void;
   stopRace(): void;
   dispose(): void;
+  render(): HTMLElement;
 }
