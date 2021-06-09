@@ -9,11 +9,13 @@ export async function sendRequest<T, Y>({
   variables,
   doRequest = fetch,
   host = "",
+  signal,
 }: {
   resource: Query<T, Y>;
   variables?: Y;
   doRequest?: typeof fetch;
   host?: string;
+  signal?: AbortSignal;
 }): Promise<{ status: number, headers: Headers, body: T }> {
   const body = extractProperty<WithPayload>(variables, "body");
   const pathParams = extractProperty<WithPathParams<Params>>(variables, "pathParams");
@@ -26,7 +28,8 @@ export async function sendRequest<T, Y>({
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-    } : {})
+    } : {}),
+    signal,
   });
 
   if (!response.ok) {

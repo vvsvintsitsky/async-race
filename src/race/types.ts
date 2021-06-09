@@ -3,9 +3,15 @@ export interface RaceController {
   dispose(): void;
 }
 
-export interface RaceView {
+export interface RaceView<T> {
   startRace(velocity: number, distance: number): void;
   stopRace(): void;
   dispose(): void;
-  render(): HTMLElement;
+  render(): T;
+}
+
+export interface Race<T> {
+  startRace(): void;
+  dispose(): void;
+  render(): T
 }

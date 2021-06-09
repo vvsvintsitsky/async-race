@@ -1,72 +1,50 @@
 import { EntityBody } from "./api/api";
 import { Car, ID } from "./api/types";
 
-import { CarStatusStorage, CarStorage } from "./storage/types";
-import { AutoRestartRaceController } from "./race/AutoRestartRaceController";
-import { RaceController, RaceView } from "./race/types";
-import { LightWeightRaceView } from "./race/view/LightweightRaceView";
+import { CarStorage } from "./storage/types";
+import { Race } from "./race/types";
 
-import styles from "./App.module.css";
+import { Track } from "./track/types";
 
-interface Track {
-  controller: RaceController;
-  view: RaceView;
-}
+export abstract class App<T> {
+  protected abstract createTrack(): Track<T>;
 
-export class App {
-  private content = document.createElement("div");
+  protected abstract createRace(car: Car): Race<T>;
+  
+  private races: Race<T>[] = [];
 
-  private tracks: Track[] = [];
+  private track: Track<T>;
 
   constructor(
     private carStorage: CarStorage,
-    private carStatusStorage: CarStatusStorage
-  ) {}
+  ) {
+    this.track = this.createTrack();
+  }
 
   public async init() {
     const cars = await Promise.all(
       this.generateCars().map((car) => this.carStorage.create(car))
     );
 
-    this.tracks = cars.map((car) => {
-      const raceView = new LightWeightRaceView(car);
-      const raceController = new AutoRestartRaceController(
-        car.id,
-        this.carStatusStorage,
-        raceView,
-        (id) => console.log(`car id=${id} stopped`),
-        this.onRaceEnd
-      );
-      return {
-        view: raceView,
-        controller: raceController,
-      };
-    });
+    this.races = cars.map((car) => this.createRace(car));
+    this.track.setRaces(this.races);
   }
 
   public render() {
-    this.content.innerHTML = "";
-    this.content.classList.add(styles.app);
-    this.tracks.forEach((track) => {
-      const viewElement = track.view.render();
-      viewElement.classList.add(styles.track);
-      this.content.append(viewElement);
-    });
-    return this.content;
+    return this.track.render();
   }
 
   public startRace() {
-    this.tracks.forEach((track) => {
-      track.controller.startRace();
+    this.races.forEach((race) => {
+      race.startRace();
     });
   }
 
-  private onRaceEnd = async (id: ID) => {
-    this.tracks.forEach(({ controller, view }) => {
-      controller.dispose();
-      view.dispose();
+  protected onRaceEnd = async (id: ID) => {
+    this.races.forEach((race) => {
+      race.dispose();
     });
-    this.tracks = [];
+    this.races = [];
     const winner = await this.carStorage.getById(id);
     alert(`${winner.name} won`);
   };

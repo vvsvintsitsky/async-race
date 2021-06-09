@@ -1,15 +1,15 @@
 import { Car } from "../../api/types";
 
-import { RaceView } from "../types";
+import { RaceController, RaceView } from "../types";
 
-import styles from "./LightweightRaceView.module.css";
+import styles from "./BrickRaceView.module.css";
 
-export class LightWeightRaceView implements RaceView {
+export class BrickRaceView implements RaceView<HTMLElement> {
   private rootElement = document.createElement("div");
 
   private carElement!: HTMLElement;
 
-  constructor(private car: Car) {}
+  constructor(private car: Car, private getController: () => RaceController) {}
 
   startRace(velocity: number, distance: number): void {
     const timeToFinish = distance / (velocity * 1000);
@@ -27,6 +27,7 @@ export class LightWeightRaceView implements RaceView {
   dispose(): void {}
 
   render() {
+    this.rootElement.innerHTML = "";
     this.carElement = document.createElement("div");
     this.carElement.classList.add(styles.car);
     this.resetCarStyle();

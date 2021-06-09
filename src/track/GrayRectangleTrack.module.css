@@ -1,4 +1,4 @@
-.app {
+.track {
   width: 900px;
   height: 600px;
 
@@ -7,6 +7,6 @@
   overflow: hidden;
 }
 
-.track {
+.race {
   margin-bottom: 60px;
 }

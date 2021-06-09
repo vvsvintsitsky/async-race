@@ -4,7 +4,7 @@ import { sendRequest } from "./request";
 import { RemoteCarStatusStorage } from "./storage/RemoteCarStatusStorage";
 import { RemoteCarStorage } from "./storage/RemoteCarStorage";
 
-import { App } from "./App";
+import { GrayTrackBrickAutoRestartApp } from "./GrayTrackBrickAutoRestartApp";
 
 const targetedRequestSender: typeof sendRequest = (args) =>
   sendRequest({ ...args, host: "http://localhost:3000" });
@@ -16,7 +16,7 @@ const carStatusStorage = new RemoteCarStatusStorage(
   targetedRequestSender
 );
 
-const app = new App(carStorage, carStatusStorage);
+const app = new GrayTrackBrickAutoRestartApp(carStorage, carStatusStorage);
 
 const rootElement = document.body;
 rootElement.append(app.render());
@@ -24,6 +24,6 @@ rootElement.append(app.render());
 // @ts-ignore
 window.startRace = async () => {
   await app.init();
-  app.render()
+  app.render();
   app.startRace();
 };

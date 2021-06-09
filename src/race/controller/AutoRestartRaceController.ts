@@ -1,8 +1,8 @@
-import { CarEngineStatus, ID } from "../api/types";
+import { CarEngineStatus, ID } from "../../api/types";
 
-import { CarStatusStorage } from "../storage/types";
+import { CarStatusStorage } from "../../storage/types";
 
-import { RaceController, RaceView } from "./types";
+import { RaceController, RaceView } from "../types";
 
 export class AutoRestartRaceController implements RaceController {
   private isDisposed = false;
@@ -10,8 +10,7 @@ export class AutoRestartRaceController implements RaceController {
   constructor(
     private carId: ID,
     private carStatusStorage: CarStatusStorage,
-    private raceView: RaceView,
-    private onCarStop: (id: ID) => void,
+    private getRaceView: () => RaceView<void>,
     private onRaceEnd: (id: ID) => void
   ) {}
 
@@ -20,13 +19,14 @@ export class AutoRestartRaceController implements RaceController {
       return;
     }
 
-    const { velocity, distance } = await this.carStatusStorage.setEngineStatus(
-      this.carId,
-      CarEngineStatus.Started
-    );
+    const { velocity, distance } =
+      await this.carStatusStorage.setEngineStatus(
+        this.carId,
+        CarEngineStatus.Started
+      );
 
     try {
-      this.raceView.startRace(velocity, distance);
+      this.getRaceView().startRace(velocity, distance);
       await this.carStatusStorage.startMovement(this.carId);
       this.endRace();
     } catch (error) {
@@ -37,16 +37,18 @@ export class AutoRestartRaceController implements RaceController {
 
   public dispose() {
     this.isDisposed = true;
-    this.raceView.dispose();
+    this.getRaceView().dispose();
   }
 
   private endRace() {
-    this.raceView.stopRace();
+    if (this.isDisposed) {
+      return;
+    }
+    this.stopRace();
     this.onRaceEnd(this.carId);
   }
 
   private stopRace() {
-    this.onCarStop(this.carId);
-    this.raceView.stopRace();
+    this.getRaceView().stopRace();
   }
 }
