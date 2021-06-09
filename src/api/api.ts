@@ -33,17 +33,19 @@ export type RequestArguments<Payload = void, PathParams = void, QueryParams = vo
 
 export interface Query<ResResult, ReqArgs = RequestArguments> extends RequestResource { }
 
-export type TOTAL_COUNT_HEADER = "X-Total-Count"
+export const TOTAL_COUNT_HEADER = "X-Total-Count"
 
 export const ID_PATH_PARAM = ":id";
 
 type IdPathParam = { [ID_PATH_PARAM]: ID };
 
+export type EntityBody<T extends Identifiable> = Omit<T, "id">;
+
 type CrudQueries<T extends Identifiable> = {
     GET_BY_ID: Query<T, RequestArguments<void, IdPathParam, void>>;
-    CREATE: Query<T, RequestArguments<Omit<T, "id">, void, void>>;
+    CREATE: Query<T, RequestArguments<EntityBody<T>, void, void>>;
     DELETE: Query<void, RequestArguments<void, IdPathParam, void>>;
-    UPDATE: Query<T, RequestArguments<Omit<T, "id">, IdPathParam, void>>;
+    UPDATE: Query<T, RequestArguments<EntityBody<T>, IdPathParam, void>>;
 }
 
 type CarQueries = CrudQueries<Car>;
@@ -64,14 +66,12 @@ export type API_SCHEMA_TYPE = {
     UPDATE_WINNER: WinnerQueries["UPDATE"];
 }
 
-const API_BASE = "";
-
-const GARAGE_BASE = `${API_BASE}/garage`;
+const GARAGE_BASE = '/garage';
 const GARAGE_ID = `${GARAGE_BASE}/${ID_PATH_PARAM}`;
 
-const ENGINE_BASE = `${API_BASE}/engine`;
+const ENGINE_BASE = '/engine';
 
-const WINNER_BASE = `${API_BASE}/winners`;
+const WINNER_BASE = '/winners';
 const WINNER_ID = `${WINNER_BASE}/${ID_PATH_PARAM}`;
 
 export const API_SCHEMA: API_SCHEMA_TYPE = {

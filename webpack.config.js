@@ -7,11 +7,6 @@ module.exports = {
   devServer: {
     port: 9000,
     contentBase: path.join(__dirname, "src"),
-    // proxy: {
-    //   "/": {
-    //     target: `http://localhost:9000`,
-    //   },
-    // },
   },
   module: {
     rules: [
