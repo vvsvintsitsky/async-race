@@ -38,6 +38,7 @@ export const TOTAL_COUNT_HEADER = "X-Total-Count"
 export const ID_PATH_PARAM = ":id";
 
 type IdPathParam = { [ID_PATH_PARAM]: ID };
+type IdQueryParam = { id: ID };
 
 export type EntityBody<T extends Identifiable> = Omit<T, "id">;
 
@@ -57,8 +58,8 @@ export type API_SCHEMA_TYPE = {
     CREATE_CAR: CarQueries["CREATE"];
     DELETE_CAR: CarQueries["DELETE"];
     UPDATE_CAR: CarQueries["UPDATE"];
-    SET_CAR_ENGINE_STATUS: Query<CarStatus, RequestArguments<void, void, IdPathParam & { status: CarEngineStatus.Started | CarEngineStatus.Stopped }>>;
-    START_CAR_MOVING: Query<{ success: true }, RequestArguments<void, void, IdPathParam & { status: CarEngineStatus.Drive }>>;
+    SET_CAR_ENGINE_STATUS: Query<CarStatus, RequestArguments<void, void, IdQueryParam & { status: CarEngineStatus.Started | CarEngineStatus.Stopped }>>;
+    START_CAR_MOVING: Query<{ success: true }, RequestArguments<void, void, IdQueryParam & { status: CarEngineStatus.Drive }>>;
     GET_ALL_WINNERS: Query<Winner[], RequestArguments<void, void, { _page: number; _limit: number; _sort?: WinnersSortColumns; _order?: SortOrder }>>;
     GET_WINNER: WinnerQueries["GET_BY_ID"];
     CREATE_WINNER: WinnerQueries["CREATE"];

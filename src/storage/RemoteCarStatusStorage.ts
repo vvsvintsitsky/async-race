@@ -17,7 +17,7 @@ export class RemoteCarStatusStorage implements CarStatusStorage {
   ) {
     const { body: carStatus } = await this.sendQuery({
       resource: this.schema.SET_CAR_ENGINE_STATUS,
-      variables: { queryParams: { ":id": id, status } },
+      variables: { queryParams: { id, status } },
     });
     return carStatus;
   }
@@ -25,7 +25,7 @@ export class RemoteCarStatusStorage implements CarStatusStorage {
   public async startMovement(id: number) {
     await this.sendQuery({
       resource: this.schema.START_CAR_MOVING,
-      variables: { queryParams: { ":id": id, status: CarEngineStatus.Drive } },
+      variables: { queryParams: { id, status: CarEngineStatus.Drive } },
     });
   }
 }
