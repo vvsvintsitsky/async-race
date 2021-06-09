@@ -12,11 +12,11 @@ const targetedRequestSender: typeof sendRequest = (args) =>
   sendRequest({ ...args, host: "http://localhost:3000" });
 
 class StubRaceView implements RaceView {
-  startRace(): void {
-    console.log("race started");
+  startRace(velocity: number, distance: number): void {
+    console.log("race started", velocity, distance);
   }
-  stopRace(progress: number): void {
-    console.log(`race stopped at ${progress}%`);
+  stopRace(): void {
+    console.log(`race stopped`);
   }
   dispose(): void {
     console.log("view dispose");

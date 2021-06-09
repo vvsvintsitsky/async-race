@@ -4,7 +4,7 @@ export interface RaceController {
 }
 
 export interface RaceView {
-  startRace(): void;
-  stopRace(progress: number): void;
+  startRace(velocity: number, distance: number): void;
+  stopRace(): void;
   dispose(): void;
 }

@@ -1,18 +1,10 @@
-import { CarEngineStatus, CarStatus, ID } from "../api/types";
+import { CarEngineStatus, ID } from "../api/types";
 
 import { CarStatusStorage } from "../storage/types";
 
 import { RaceController, RaceView } from "./types";
 
 export class AutoRestartRaceController implements RaceController {
-  private requiredWinPercentage = 100;
-
-  private winTimeoutId?: number;
-
-  private distanceCovered = 0;
-
-  private carStatus?: CarStatus;
-
   private isDisposed = false;
 
   constructor(
@@ -24,72 +16,37 @@ export class AutoRestartRaceController implements RaceController {
   ) {}
 
   public async startRace(): Promise<void> {
-    this.clearWinTimeout();
-
     if (this.isDisposed) {
       return;
     }
 
-    this.carStatus = await this.carStatusStorage.setEngineStatus(
+    const { velocity, distance } = await this.carStatusStorage.setEngineStatus(
       this.carId,
       CarEngineStatus.Started
     );
 
-    const movementPendingResult = this.carStatusStorage.startMovement(
-      this.carId
-    );
-
-    this.raceView.startRace();
-
-    const estimatedTimeToEnd =
-      (this.carStatus.distance - this.distanceCovered) /
-      this.carStatus.velocity;
-
-    this.winTimeoutId = window.setTimeout(() => {
+    try {
+      this.raceView.startRace(velocity, distance);
+      await this.carStatusStorage.startMovement(this.carId);
       this.endRace();
-    }, estimatedTimeToEnd);
-
-    const movementStartTime = new Date();
-    movementPendingResult.catch(() => {
-      this.stopRace(movementStartTime);
+    } catch (error) {
+      this.stopRace();
       this.startRace();
-    });
+    }
   }
 
   public dispose() {
-    this.clearWinTimeout();
+    this.isDisposed = true;
     this.raceView.dispose();
   }
 
-  private clearWinTimeout() {
-    clearTimeout(this.winTimeoutId);
-  }
-
   private endRace() {
-    this.raceView.stopRace(this.requiredWinPercentage);
+    this.raceView.stopRace();
     this.onRaceEnd(this.carId);
   }
 
-  private stopRace(movementStartTime: Date) {
+  private stopRace() {
     this.onCarStop(this.carId);
-    this.distanceCovered =
-      this.distanceCovered + this.calculateCoveredDistance(movementStartTime);
-    this.raceView.stopRace(this.distanceCovered / this.getCarStatus().distance);
-  }
-
-  private getCarStatus() {
-    if (!this.carStatus) {
-      throw new Error("Car status is not initialized");
-    }
-
-    return this.carStatus;
-  }
-
-  private calculateCoveredDistance(movementStartTime: Date) {
-    return (
-      (this.getCarStatus().velocity *
-        (movementStartTime.getTime() - new Date().getTime())) /
-      1000
-    );
+    this.raceView.stopRace();
   }
 }
