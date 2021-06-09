@@ -5,6 +5,8 @@ import { Race } from "./race/types";
 import { Track } from "./track/types";
 import { GrayRectangleTrack } from "./track/GrayRectangleTrack";
 import { BrickAutoRestartRace } from "./race/BrickAutoRestartRace";
+import { Controls } from "./controls/types";
+import { StartRaceControls } from "./controls/StartRaceControls";
 
 import { App } from "./App";
 
@@ -24,5 +26,9 @@ export class GrayTrackBrickAutoRestartApp extends App<HTMLElement> {
     return new BrickAutoRestartRace(this.carStatusStorage, car, (id: ID) =>
       this.onRaceEnd(id)
     );
+  }
+
+  protected createControls(): Controls<HTMLElement> {
+    return new StartRaceControls(() => this.startRace());
   }
 }

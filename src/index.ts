@@ -19,11 +19,5 @@ const carStatusStorage = new RemoteCarStatusStorage(
 const app = new GrayTrackBrickAutoRestartApp(carStorage, carStatusStorage);
 
 const rootElement = document.body;
-rootElement.append(app.render());
-
-// @ts-ignore
-window.startRace = async () => {
-  await app.init();
-  app.render();
-  app.startRace();
-};
+const { controls, track } = app.render();
+rootElement.append(controls, track);

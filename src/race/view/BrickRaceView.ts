@@ -12,6 +12,8 @@ export class BrickRaceView implements RaceView<HTMLElement> {
   constructor(private car: Car, private getController: () => RaceController) {}
 
   startRace(velocity: number, distance: number): void {
+    this.resetCarStyle();
+    this.carElement.classList.add(styles.carMovement);
     const timeToFinish = distance / (velocity * 1000);
     this.carElement.classList.add(styles.carMovement);
     this.setCarStyle(
