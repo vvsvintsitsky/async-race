@@ -41,13 +41,13 @@ export class AutoRestartRaceController implements RaceController {
 
     this.raceView.startRace();
 
-    const estimatedTimeToEndMilliseconds =
-      (this.carStatus.distance - this.distanceCovered) * 1000 /
+    const estimatedTimeToEnd =
+      (this.carStatus.distance - this.distanceCovered) /
       this.carStatus.velocity;
 
     this.winTimeoutId = window.setTimeout(() => {
       this.endRace();
-    }, estimatedTimeToEndMilliseconds);
+    }, estimatedTimeToEnd);
 
     const movementStartTime = new Date();
     movementPendingResult.catch(() => {
