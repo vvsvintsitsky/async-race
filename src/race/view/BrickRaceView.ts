@@ -13,7 +13,7 @@ export class BrickRaceView implements RaceView<HTMLElement> {
 
   startRace(velocity: number, distance: number): void {
     this.resetCarStyle();
-    this.carElement.classList.add(styles.carMovement);
+    void this.carElement.offsetWidth;
     const timeToFinishSeconds = distance / (velocity * 1000);
     this.carElement.classList.add(styles.carMovement);
     this.decorateCarStyle(
@@ -25,10 +25,11 @@ export class BrickRaceView implements RaceView<HTMLElement> {
     const carRect = this.carElement.getBoundingClientRect();
     const rootRect = this.rootElement.getBoundingClientRect();
 
-    const progressPercentage = (carRect.left + carRect.width) * 100 / rootRect.width;
-    this.decorateCarStyle(`left: ${progressPercentage}%;`)
+    const progressPercentage =
+      ((carRect.left + carRect.width) * 100) / rootRect.width;
 
     this.carElement.classList.remove(styles.carMovement);
+    this.decorateCarStyle(`left: ${progressPercentage}%;`);
   }
 
   dispose(): void {}
@@ -55,11 +56,11 @@ export class BrickRaceView implements RaceView<HTMLElement> {
   }
 
   private resetCarStyle() {
-      this.setCarStyle(this.getCarDefaultStyle());
+    this.setCarStyle(this.getCarDefaultStyle());
   }
 
   private decorateCarStyle(style: string) {
-    this.setCarStyle(this.getCarDefaultStyle().concat(style))
+    this.setCarStyle(this.getCarDefaultStyle().concat(style));
   }
 
   private setCarStyle(style: string) {
