@@ -1,0 +1,14 @@
+.header {
+    display: flex;
+    border-bottom: 1px solid black;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+}
+
